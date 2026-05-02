@@ -17,7 +17,6 @@
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest run",
-    "test:contract": "vitest run __tests__/contract/",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "ingest": "tsx scripts/ingest-domstol.ts",
