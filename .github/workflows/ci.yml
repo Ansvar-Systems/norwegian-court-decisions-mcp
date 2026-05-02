@@ -28,6 +28,17 @@ jobs:
       # - name: Lint
       #   run: npm run lint
 
+      - name: Ingest decisions (capped at 50 for CI speed)
+        run: |
+          # Seed files and the built DB are gitignored; CI must fetch them.
+          # COURT_MAX_PER_RUN=50 limits to ~55 s of network time (1.1 s/request).
+          # COURT_SKIP_EXISTING=true makes re-runs idempotent.
+          if jq -e '.scripts.ingest' package.json >/dev/null 2>&1; then
+            COURT_MAX_PER_RUN=50 COURT_SKIP_EXISTING=true npm run ingest
+          else
+            echo "ingest script not present — skipping"
+          fi
+
       - name: Build database
         run: |
           if jq -e '.scripts["build:db"]' package.json >/dev/null 2>&1; then
