@@ -1,0 +1,38 @@
+schema_version: "1.0"
+mcp_name: "Norwegian Court Decisions MCP"
+jurisdiction: "NO"
+
+sources:
+  - name: "domstol.no — Høyesterett avgjørelser"
+    authority: "Domstolsadministrasjonen / Norwegian Courts Administration"
+    official_portal: "https://www.domstol.no/no/hoyesterett/avgjorelser/"
+    canonical_identifier: "HR case number (e.g., HR-2025-2303-A)"
+    retrieval_method: "HTML_SCRAPE"
+    update_frequency: "monthly"
+    last_ingested: "TBD"
+    license_or_terms:
+      type: "Norwegian-Court-Publication"
+      url: "https://www.domstol.no/no/hoyesterett/VERKTOY/avidentifisering/"
+      summary: >
+        Two-part basis:
+        (1) åndsverkloven §14: court decisions are not protected by copyright at source-text level.
+        (2) Høyesterett post-2021 anonymization regime: all decisions pre-anonymized before web
+        publication. Content is free for reuse including commercial and AI training/development.
+        Attribution required: cite domstol.no as source.
+    coverage:
+      scope: >
+        Norwegian Supreme Court (Høyesterett) decisions published on domstol.no, post-November 2021 only.
+        Includes both Høyesterett (full bench, -A/-P suffix) and Høyesteretts ankeutvalg (-U suffix).
+        Pages provide: title (anonymized case description), MainIntro (parties and docket reference),
+        MainBody (substantive summary, rettsområde, nøkkelavsnitt, dommere), PDF link.
+        NOTE: The domstol.no decision pages contain a summary/press-release-style description,
+        not the full verbatim court decision text. The full text is in the linked PDF.
+        v0.1 ingests the HTML summary body. PDF full-text ingestion is a Phase 2 item.
+      limitations:
+        - "Pre-2021 decisions: anonymization status varies; excluded from v0.1 scope"
+        - "Full verbatim decision text requires PDF parsing (Phase 2)"
+        - "Lagmannsrett and Tingrett not included in v0.1"
+        - "Nynorsk and Sami language versions may not be separately indexed"
+    languages:
+      - "nb"
+      - "en"

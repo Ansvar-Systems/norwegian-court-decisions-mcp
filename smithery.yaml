@@ -1,0 +1,51 @@
+# Smithery Registry Configuration
+# https://smithery.ai
+
+name: norwegian-law-mcp
+title: Norwegian Law MCP
+description: |
+  MCP server for Norwegian statutes and regulations.
+  Query Norwegian law directly from Claude, Cursor, or any MCP-compatible client.
+  Data sourced from api.lovdata.no under NLOD 2.0.
+
+author: Ansvar Systems
+authorUrl: https://ansvar.eu
+repository: https://github.com/Ansvar-Systems/norwegian-law-mcp
+license: Apache-2.0
+
+categories:
+  - legal-and-compliance
+  - reference-data
+
+tags:
+  - norwegian-law
+  - norway
+  - lovdata
+  - nlod-2.0
+  - legal
+  - compliance
+  - nordic
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    (config) => ({
+      command: 'npx',
+      args: ['-y', '@ansvar/norwegian-law-mcp']
+    })
+
+tools:
+  - name: search_legislation
+    description: Full-text search across Norwegian statutes and central regulations
+
+  - name: get_provision
+    description: Retrieve a specific provision from a statute by LOV identifier
+
+  - name: validate_citation
+    description: Validate a Norwegian legal citation against the database
+
+  - name: check_currency
+    description: Check whether a statute is currently in force

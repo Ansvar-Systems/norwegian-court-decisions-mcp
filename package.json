@@ -1,0 +1,79 @@
+{
+  "name": "@ansvar/norwegian-court-decisions-mcp",
+  "version": "0.1.0",
+  "description": "Production-grade Norwegian Supreme Court (Høyesterett) decisions MCP server with post-2021 anonymized decisions from domstol.no",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "norwegian-court-decisions-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "data/database.db"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:db": "tsx scripts/build-db.ts",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:contract": "vitest run __tests__/contract/",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "ingest": "tsx scripts/ingest-domstol.ts",
+    "lint": "eslint src tests",
+    "prepublishOnly": "npm run build",
+    "postinstall": "test -d dist || npm run build || true"
+  },
+  "dependencies": {
+    "@ansvar/mcp-sqlite": "^1.0.3",
+    "@modelcontextprotocol/sdk": "^1.25.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.15.29",
+    "@vitest/coverage-v8": "^4.0.18",
+    "better-sqlite3": "^12.6.2",
+    "fast-xml-parser": "^5.3.5",
+    "jsdom": "^27.4.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "overrides": {
+    "path-to-regexp": "^8.4.2",
+    "minimatch": "^10.2.5",
+    "undici": "^8.0.2",
+    "ajv": "^8.18.0",
+    "smol-toml": "^1.6.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ansvar-Systems/norwegian-court-decisions-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ansvar-Systems/norwegian-court-decisions-mcp/issues"
+  },
+  "homepage": "https://ansvar.eu",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "claude",
+    "norwegian-court",
+    "hoyesterett",
+    "norway",
+    "legal",
+    "case-law",
+    "court-decisions",
+    "domstol",
+    "ansvar"
+  ],
+  "author": "Ansvar Systems AB <hello@ansvar.ai>",
+  "license": "Apache-2.0",
+  "mcpName": "eu.ansvar/norwegian-court-decisions-mcp"
+}

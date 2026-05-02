@@ -1,0 +1,55 @@
+{
+  "manifest_version": "0.3",
+  "name": "norwegian-court-decisions-mcp",
+  "display_name": "Norwegian Court Decisions MCP Server",
+  "version": "0.1.0",
+  "description": "Production-grade Norwegian Supreme Court (Høyesterett) decisions MCP server with post-2021 anonymized decisions from domstol.no",
+  "author": {
+    "name": "Ansvar Systems",
+    "email": "hello@ansvar.eu",
+    "url": "https://ansvar.eu"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ansvar-Systems/norwegian-court-decisions-mcp"
+  },
+  "homepage": "https://ansvar.eu",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "claude",
+    "norwegian-court",
+    "hoyesterett",
+    "norway",
+    "legal",
+    "case-law",
+    "court-decisions",
+    "domstol",
+    "ansvar"
+  ],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {}
+    }
+  },
+  "tools": [
+    { "name": "search_case_law" },
+    { "name": "get_decision" },
+    { "name": "validate_citation" },
+    { "name": "format_citation" },
+    { "name": "list_sources" },
+    { "name": "about" }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  }
+}

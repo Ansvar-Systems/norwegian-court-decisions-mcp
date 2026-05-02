@@ -1,0 +1,339 @@
+{
+  "$schema": "./golden-tests.schema.json",
+  "version": "1.0",
+  "mcp_name": "Swedish Law MCP",
+  "description": "Golden contract tests for the Swedish Law MCP",
+  "tests": [
+    {
+      "id": "se-001",
+      "category": "article_retrieval",
+      "description": "Retrieve provision 1:1 from Dataskyddslagen (SFS 2018:218)",
+      "tool": "get_provision",
+      "input": {
+        "document_id": "2018:218",
+        "chapter": "1",
+        "section": "1"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true
+      }
+    },
+    {
+      "id": "se-002",
+      "category": "article_retrieval",
+      "description": "Retrieve provision 2:1 from Dataskyddslagen (SFS 2018:218)",
+      "tool": "get_provision",
+      "input": {
+        "document_id": "2018:218",
+        "chapter": "2",
+        "section": "1"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true
+      }
+    },
+    {
+      "id": "se-003",
+      "category": "article_retrieval",
+      "description": "Retrieve provision from Rättegångsbalken (SFS 1942:740)",
+      "tool": "get_provision",
+      "input": {
+        "document_id": "1942:740",
+        "chapter": "1",
+        "section": "1"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true,
+        "any_result_contains": ["Tingsrätten"]
+      }
+    },
+    {
+      "id": "se-004",
+      "category": "search",
+      "description": "Search for 'personuppgifter' returns GDPR-related results",
+      "tool": "search_legislation",
+      "input": {
+        "query": "personuppgifter"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "min_results": 1,
+        "any_result_contains": ["personuppgifter"]
+      }
+    },
+    {
+      "id": "se-005",
+      "category": "search",
+      "description": "Search for 'skadestand' returns relevant provisions",
+      "tool": "search_legislation",
+      "input": {
+        "query": "skadestand"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "min_results": 1
+      }
+    },
+    {
+      "id": "se-006",
+      "category": "citation_roundtrip",
+      "description": "Validate SFS citation format for Dataskyddslagen",
+      "tool": "validate_citation",
+      "input": {
+        "citation": "SFS 2018:218"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true
+      }
+    },
+    {
+      "id": "se-007",
+      "category": "citation_roundtrip",
+      "description": "Format citation for Skollagen",
+      "tool": "format_citation",
+      "input": {
+        "citation": "SFS 2010:800",
+        "format": "full"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true
+      }
+    },
+    {
+      "id": "se-008",
+      "category": "eu_cross_reference",
+      "description": "Get EU basis for Dataskyddslagen returns GDPR reference",
+      "tool": "get_eu_basis",
+      "input": {
+        "sfs_number": "2018:218"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "any_result_contains": ["GDPR", "2016/679"]
+      }
+    },
+    {
+      "id": "se-009",
+      "category": "article_retrieval",
+      "description": "Check currency of Dataskyddslagen returns status",
+      "tool": "check_currency",
+      "input": {
+        "document_id": "2018:218"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true
+      }
+    },
+    {
+      "id": "se-010",
+      "category": "negative_test",
+      "description": "Non-existent statute returns gracefully",
+      "tool": "get_provision",
+      "input": {
+        "document_id": "9999:999",
+        "chapter": "1",
+        "section": "1"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-011",
+      "category": "negative_test",
+      "description": "Invalid citation format handled gracefully",
+      "tool": "validate_citation",
+      "input": {
+        "citation": "not-a-real-citation-xyz-999"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-012",
+      "category": "negative_test",
+      "description": "Search with empty results handled gracefully",
+      "tool": "search_legislation",
+      "input": {
+        "query": "xyznonexistentterm99999"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-013",
+      "category": "case_law",
+      "description": "Search case law for 'samtycke' returns GDPR consent case",
+      "tool": "search_case_law",
+      "input": {
+        "query": "samtycke"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true,
+        "any_result_contains": ["GDPR"]
+      }
+    },
+    {
+      "id": "se-014",
+      "category": "case_law",
+      "description": "Search case law with court filter returns HD decisions",
+      "tool": "search_case_law",
+      "input": {
+        "query": "avtalsbrott",
+        "court": "HD"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-015",
+      "category": "preparatory_works",
+      "description": "Get preparatory works for Dataskyddslagen (SFS 2018:218)",
+      "tool": "get_preparatory_works",
+      "input": {
+        "document_id": "2018:218"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true
+      }
+    },
+    {
+      "id": "se-016",
+      "category": "preparatory_works",
+      "description": "Get preparatory works for non-existent statute handled gracefully",
+      "tool": "get_preparatory_works",
+      "input": {
+        "document_id": "9999:999"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-017",
+      "category": "aggregation",
+      "description": "Build legal stance for 'personuppgifter' aggregates multi-source results",
+      "tool": "build_legal_stance",
+      "input": {
+        "query": "personuppgifter",
+        "limit": 3
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "text_not_empty": true
+      }
+    },
+    {
+      "id": "se-018",
+      "category": "eu_cross_reference",
+      "description": "Get provision-level EU basis for DSL 1:1",
+      "tool": "get_provision_eu_basis",
+      "input": {
+        "sfs_number": "2018:218",
+        "provision_ref": "1:1"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-019",
+      "category": "eu_cross_reference",
+      "description": "Find Swedish implementations of GDPR (regulation:2016/679)",
+      "tool": "get_swedish_implementations",
+      "input": {
+        "eu_document_id": "regulation:2016/679"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "any_result_contains": ["2018:218"]
+      }
+    },
+    {
+      "id": "se-020",
+      "category": "eu_cross_reference",
+      "description": "Search EU implementations for 'data protection'",
+      "tool": "search_eu_implementations",
+      "input": {
+        "query": "data protection",
+        "has_swedish_implementation": true
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-021",
+      "category": "provenance",
+      "description": "List sources returns jurisdiction and source metadata",
+      "tool": "list_sources",
+      "input": {},
+      "assertions": {
+        "result_not_empty": true,
+        "any_result_contains": ["Riksdagen", "Sweden"]
+      }
+    },
+    {
+      "id": "se-022",
+      "category": "special_characters",
+      "description": "Search with Swedish special characters (å, ä, ö) returns results",
+      "tool": "search_legislation",
+      "input": {
+        "query": "förordning"
+      },
+      "assertions": {
+        "result_not_empty": true,
+        "min_results": 1
+      }
+    },
+    {
+      "id": "se-023",
+      "category": "error_handling",
+      "description": "SQL injection attempt in search query handled gracefully",
+      "tool": "search_legislation",
+      "input": {
+        "query": "'; DROP TABLE legal_documents; --"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-024",
+      "category": "error_handling",
+      "description": "SQL injection attempt in document_id handled gracefully",
+      "tool": "get_provision",
+      "input": {
+        "document_id": "2018:218' OR '1'='1",
+        "chapter": "1",
+        "section": "1"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    },
+    {
+      "id": "se-025",
+      "category": "error_handling",
+      "description": "FTS5 syntax characters in search handled gracefully",
+      "tool": "search_legislation",
+      "input": {
+        "query": "NOT (OR AND) \"unclosed quote"
+      },
+      "assertions": {
+        "handles_gracefully": true
+      }
+    }
+  ]
+}

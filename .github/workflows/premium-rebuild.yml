@@ -1,0 +1,41 @@
+# Build & push the premium Docker image to GHCR.
+# Triggered manually or on push to dev when premium files change.
+name: Premium Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [dev]
+    paths:
+      - 'src/tools/version-tracking.ts'
+      - 'scripts/add-provision-versions.sql'
+      - 'Dockerfile.premium'
+      - 'data/database.db'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.premium
+          push: true
+          tags: |
+            ghcr.io/ansvar-systems/swedish-law-mcp-premium:latest
+            ghcr.io/ansvar-systems/swedish-law-mcp-premium:${{ github.sha }}
+          platforms: linux/amd64

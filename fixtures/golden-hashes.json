@@ -1,0 +1,50 @@
+{
+  "$schema": "./golden-hashes.schema.json",
+  "version": "1.0",
+  "mcp_name": "Swedish Law MCP",
+  "jurisdiction": "SE",
+  "description": "Drift detection anchors for stable Swedish provisions. Constitutional and fundamental law articles that rarely change.",
+  "computed_at": "2026-04-25T10:00:00Z",
+  "provisions": [
+    {
+      "id": "se-hash-001",
+      "description": "Regeringsformen (RF) 1 kap. — Statsskickets grunder (constitutional fundamentals)",
+      "upstream_url": "https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/kungorelse-1974152-om-beslutad-ny-regeringsform_sfs-1974-152/",
+      "selector_hint": "1 kap.",
+      "expected_sha256": "0035fa6cc8221dbfc697d4a253f94bf6cef754feeb96a8e95735dfdb12fd1598",
+      "expected_snippet": "All offentlig makt i Sverige utgår från folket"
+    },
+    {
+      "id": "se-hash-002",
+      "description": "Tryckfrihetsforordningen (TF) 1 kap. — press freedom fundamentals",
+      "upstream_url": "https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/tryckfrihetsforordning-1949105_sfs-1949-105/",
+      "selector_hint": "1 kap.",
+      "expected_sha256": "9377f40ff59b60f4851936accea7a84b66afbe4dd85e7235fd0e28964e8196b9",
+      "expected_snippet": "tryckfrihet"
+    },
+    {
+      "id": "se-hash-003",
+      "description": "Brottsbalken (BrB) 1 kap. 1 § — legality principle",
+      "upstream_url": "https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/brottsbalk-1962700_sfs-1962-700/",
+      "selector_hint": "1 kap. 1 §",
+      "expected_sha256": "5b301721681a689904eed837f1cf4dfe9632b5bd0ac207598c1c354e2e0a4174",
+      "expected_snippet": "brott"
+    },
+    {
+      "id": "se-hash-004",
+      "description": "Skollagen (2010:800) 1 kap. — scope and purpose",
+      "upstream_url": "https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/skollag-2010800_sfs-2010-800/",
+      "selector_hint": "1 kap.",
+      "expected_sha256": "e9b968f5af5ff2591a76226b3788b8e24c507e3d51cca030f67c8e0645293cc7",
+      "expected_snippet": "utbildning"
+    },
+    {
+      "id": "se-hash-005",
+      "description": "Miljöbalken (1998:808) 1 kap. — purpose of the Environmental Code",
+      "upstream_url": "https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/miljobalk-1998808_sfs-1998-808/",
+      "selector_hint": "1 kap.",
+      "expected_sha256": "d316cf9ec8dee92c5cbc45ebe1983d4e965ff821f4c16ca24518dd3ed2b85797",
+      "expected_snippet": "hållbar utveckling"
+    }
+  ]
+}
