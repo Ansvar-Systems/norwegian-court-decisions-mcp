@@ -68,6 +68,9 @@ COPY --from=builder /app/dist ./dist
 # This file MUST exist — run `npm run build:db` (or full pipeline) first
 COPY data/database.db ./data/database.db
 
+# Copy data sources manifest (read by check_data_freshness tool at runtime)
+COPY sources.yml ./sources.yml
+
 # ───────────────────────────────────────────────────────────────────────────
 # SECURITY
 # ───────────────────────────────────────────────────────────────────────────
