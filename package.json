@@ -31,7 +31,7 @@
     "ingest:full": "npm run ingest:fetch && npm run build:db && npm run coverage:update"
   },
   "dependencies": {
-    "@ansvar/mcp-sqlite": "^1.0.3",
+    "@ansvar/mcp-sqlite": "^1.0.5",
     "@modelcontextprotocol/sdk": "^1.25.3",
     "js-yaml": "^4.1.1"
   },
