@@ -9,7 +9,8 @@ sources:
     canonical_identifier: "HR case number (e.g., HR-2025-2303-A)"
     retrieval_method: "HTML_SCRAPE"
     update_frequency: "monthly"
-    last_ingested: "TBD"
+    last_ingested: "2026-05-02"
+    last_verified: "2026-05-09"
     license_or_terms:
       type: "Norwegian-Court-Publication"
       url: "https://www.domstol.no/no/hoyesterett/VERKTOY/avidentifisering/"

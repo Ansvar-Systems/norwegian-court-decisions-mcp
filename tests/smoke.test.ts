@@ -21,15 +21,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DB_PATH = path.resolve(__dirname, '../data/database.db');
 
-describe('norwegian-court-decisions-mcp smoke', () => {
+// Skip the whole smoke suite when no usable DB is present. CI's `npm run
+// build:db` produces a schema-only artifact (>1024 bytes) on first runs;
+// real ingestion is run separately. Pattern from
+// feedback_contract_test_skip_on_empty_db_2026_05_07.md.
+const dbReady =
+  fs.existsSync(DB_PATH) && fs.statSync(DB_PATH).size > 1024;
+const describeFn = dbReady ? describe : describe.skip;
+
+describeFn('norwegian-court-decisions-mcp smoke', () => {
   let db: InstanceType<typeof Database>;
 
   beforeAll(() => {
-    if (!fs.existsSync(DB_PATH)) {
-      throw new Error(
-        `Database not found at ${DB_PATH}. Run \`npm run ingest\` then \`npm run build:db\` before tests.`,
-      );
-    }
     db = new Database(DB_PATH, { readonly: true });
   });
 
