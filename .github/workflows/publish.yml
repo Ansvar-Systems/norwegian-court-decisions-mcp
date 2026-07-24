@@ -12,8 +12,15 @@
 #
 # Requirements:
 #   - NPM_TOKEN secret configured in repository settings
-#   - AZURE_CREDENTIALS secret with Key Vault Secrets User role for kv-ansvar-dev
-#   - Azure Key Vault 'kv-ansvar-dev' must contain secret 'mcp-publisher-private-key'
+#   - MCP_PUBLISHER_PRIVATE_KEY secret in the mcp-registry-publish
+#     environment (Ed25519 private half; the public half is the TXT record
+#     at ansvar.eu). Delivery moved off Azure Key Vault 2026-07-24:
+#     kv-ansvar-dev is default-deny with an operator-only IP allowlist
+#     (GAP-009) and sunsets after the MDR-045 W8 soak. Rotation: re-set the
+#     secret from an operator seat (pipe the raw hex key in, never echo it)
+#     and prove it with a workflow_dispatch run (auth-proof job) BEFORE
+#     discarding old key material. The environment's deployment branch/tag
+#     policy restricts secret release to main and v* tag runs.
 #   - Repository has id-token: write permission for provenance
 #
 # ═══════════════════════════════════════════════════════════════════════════
@@ -24,6 +31,10 @@ on:
   push:
     tags:
       - 'v*'  # Trigger on tags like v0.1.0, v1.0.0, etc.
+  # Dispatch runs ONLY the auth-proof job (test + publish are gated on the
+  # tag push event) — use it to prove the registry signing key works after
+  # seeding or rotating the environment secret.
+  workflow_dispatch:
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
@@ -33,6 +44,7 @@ jobs:
   # ─────────────────────────────────────────────────────────────────────────
 
   test:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
@@ -68,7 +80,13 @@ jobs:
 
   publish:
     needs: test
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
+
+    # The MCP registry signing key lives in this environment's
+    # MCP_PUBLISHER_PRIVATE_KEY secret — see the header comment for the
+    # rotation procedure.
+    environment: mcp-registry-publish
 
     permissions:
       contents: write  # Required for GitHub Release SBOM attachment
@@ -140,21 +158,6 @@ jobs:
       # MCP REGISTRY PUBLISH
       # ─────────────────────────────────────────────────────────────────────
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Get MCP Publisher Private Key from Key Vault
-        id: mcp-key
-        run: |
-          PRIVATE_KEY=$(az keyvault secret show \
-            --vault-name kv-ansvar-dev \
-            --name mcp-publisher-private-key \
-            --query value -o tsv)
-          echo "::add-mask::$PRIVATE_KEY"
-          echo "PRIVATE_KEY=$PRIVATE_KEY" >> $GITHUB_OUTPUT
-
       - name: Install MCP Publisher
         run: |
           curl -L -o mcp-publisher.tar.gz \
@@ -166,8 +169,17 @@ jobs:
 
       - name: Authenticate with MCP Registry
         env:
-          PRIVATE_KEY: ${{ steps.mcp-key.outputs.PRIVATE_KEY }}
+          # Sourced from the mcp-registry-publish environment secret (see
+          # the header comment for the rotation procedure).
+          PRIVATE_KEY: ${{ secrets.MCP_PUBLISHER_PRIVATE_KEY }}
         run: |
+          # A missing/renamed environment secret resolves to an empty string
+          # silently — fail closed with a clear pointer instead of letting
+          # the login step produce a confusing registry error.
+          if [ -z "$PRIVATE_KEY" ]; then
+            echo "::error::MCP_PUBLISHER_PRIVATE_KEY is empty. Check the mcp-registry-publish environment secret on this repo."
+            exit 1
+          fi
           mcp-publisher login dns -domain ansvar.eu -private-key "$PRIVATE_KEY"
 
       - name: Publish to MCP Registry
@@ -218,3 +230,38 @@ jobs:
           echo "### Published To:" >> $GITHUB_STEP_SUMMARY
           echo "- npm: https://www.npmjs.com/package/@ansvar/swedish-law-mcp/v/$PKG_VERSION" >> $GITHUB_STEP_SUMMARY
           echo "- MCP Registry: https://registry.modelcontextprotocol.io" >> $GITHUB_STEP_SUMMARY
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # AUTH PROOF (workflow_dispatch only)
+  # ─────────────────────────────────────────────────────────────────────────
+  # Proves the environment secret authenticates against the live MCP
+  # registry without publishing anything. Run after seeding or rotating
+  # MCP_PUBLISHER_PRIVATE_KEY.
+  # ─────────────────────────────────────────────────────────────────────────
+
+  auth-proof:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: mcp-registry-publish
+    permissions:
+      contents: read
+    steps:
+      - name: Install MCP Publisher
+        run: |
+          curl -L -o mcp-publisher.tar.gz \
+            https://github.com/modelcontextprotocol/registry/releases/download/v1.4.0/mcp-publisher_linux_amd64.tar.gz
+          tar -xzf mcp-publisher.tar.gz
+          chmod +x mcp-publisher
+          sudo mv mcp-publisher /usr/local/bin/
+          mcp-publisher --version
+
+      - name: Authenticate with MCP Registry (proof only, no publish)
+        env:
+          PRIVATE_KEY: ${{ secrets.MCP_PUBLISHER_PRIVATE_KEY }}
+        run: |
+          if [ -z "$PRIVATE_KEY" ]; then
+            echo "::error::MCP_PUBLISHER_PRIVATE_KEY is empty. Check the mcp-registry-publish environment secret on this repo."
+            exit 1
+          fi
+          mcp-publisher login dns -domain ansvar.eu -private-key "$PRIVATE_KEY"
+          echo "Auth proof passed — registry login succeeded with the environment secret"
